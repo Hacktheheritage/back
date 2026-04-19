@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors({ origin: true }));
 app.use(express.json());
 
+// Serve static files from the frontend build directory
+const distPath = process.env.VERCEL ? path.join(__dirname, '../dist') : path.join(__dirname, '../../front/dist');
+app.use(express.static(distPath));
+
 app.get('/', (req, res) => {
   res.json({ message: 'Bilge backend API' });
 });
@@ -21,6 +25,12 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
+
+// Fallback to index.html for SPA routing
+app.get('*', (req, res) => {
+  const indexPath = process.env.VERCEL ? path.join(__dirname, '../dist/index.html') : path.join(__dirname, '../../front/dist/index.html');
+  res.sendFile(indexPath);
+});
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
