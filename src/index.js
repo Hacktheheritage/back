@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
@@ -51,3 +53,4 @@ ensureDataFiles()
     console.error('Failed to initialize backend:', error);
     process.exit(1);
   });
+
